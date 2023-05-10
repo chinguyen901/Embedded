@@ -38,7 +38,7 @@ void loop() {
   rev = SPI_Soft_transfer('a');//ASCII: 0x61 - 97 
   SPI_Soft_end();
   Serial.println(rev);
-  Serial.println(1);
+  Serial.println("-");
   delay(1000);
 }
 
