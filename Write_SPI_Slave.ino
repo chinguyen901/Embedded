@@ -24,9 +24,9 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly: 
   uint8_t rev;
-
   rev = SPI_Soft_transfer('A');//ASCII : 0x41 - 65
-
+  Serial.println(rev);
+  Serial.println('-');
 }
 
 void SPI_Soft_setup(void)
