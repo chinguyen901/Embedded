@@ -1,0 +1,42 @@
+<div class="tenant-add-container">
+  <form (ngSubmit)="submitAddTenantForm()" class="form-horizontal">
+    <table class="table_config_general select-dropdown-wrapper">
+      <tr>
+        <td>Tenant ID</td>
+        <td>
+          <input type="text"
+                 [(ngModel)]="tenant.id"
+                 name="tenantId"
+                 [disabled]="modify"
+                 [class.notUnique]="!tid_valid"
+                 placeholder="Enter Tenant ID" />
+          <span class="error-msg">{{ tid_title }}</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Tenant Name</td>
+        <td>
+          <input type="text"
+                 [(ngModel)]="tenant.name"
+                 name="tenantName"
+                 [class.notUnique]="!tname_valid"
+                 placeholder="Enter Tenant Name" />
+          <span class="error-msg">{{ tname_title }}</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Description</td>
+        <td>
+          <input type="text"
+                 [(ngModel)]="tenant.description"
+                 name="tenantDescription"
+                 placeholder="Enter Description" />
+        </td>
+      </tr>
+    </table>
+
+    <button type="submit" class="border_button button_controller">Apply</button>
+  </form>
+</div>
