@@ -1,0 +1,91 @@
+<div class="group-list">
+  <div class="table-container">
+    <table class="table table-hover main_table" id="group_list_table">
+      <thead>
+        <tr>
+          <th (click)="sort('name')">
+            Name
+            <span *ngIf="orderByField === 'name'">
+              <img *ngIf="!reverseSort" src="assets/images/dp_uparrow.png" />
+              <img *ngIf="reverseSort" src="assets/images/dp_downarrow.png" />
+            </span>
+          </th>
+          <th (click)="sort('localGroups')">
+            Authentication Directory/External Group
+            <span *ngIf="orderByField === 'localGroups'">
+              <img *ngIf="!reverseSort" src="assets/images/dp_uparrow.png" />
+              <img *ngIf="reverseSort" src="assets/images/dp_downarrow.png" />
+            </span>
+          </th>
+          <th (click)="sort('pbxName')">
+            IP PBX
+            <span *ngIf="orderByField === 'pbxName'">
+              <img *ngIf="!reverseSort" src="assets/images/dp_uparrow.png" />
+              <img *ngIf="reverseSort" src="assets/images/dp_downarrow.png" />
+            </span>
+          </th>
+          <th (click)="sort('accessParametersName')">
+            Access Numbers
+            <span *ngIf="orderByField === 'accessParametersName'">
+              <img *ngIf="!reverseSort" src="assets/images/dp_uparrow.png" />
+              <img *ngIf="reverseSort" src="assets/images/dp_downarrow.png" />
+            </span>
+          </th>
+          <th *ngIf="is_mt_enable" (click)="sort('tenant')">
+            Tenant Name
+            <span *ngIf="orderByField === 'tenant'">
+              <img *ngIf="!reverseSort" src="assets/images/dp_uparrow.png" />
+              <img *ngIf="reverseSort" src="assets/images/dp_downarrow.png" />
+            </span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          *ngFor="let g of groupData; let i = index"
+          [class.selected]="g.selected"
+          (click)="setClickedRow(i)"
+          (dblclick)="edit(i)"
+          [id]="'row' + i"
+        >
+          <td>{{ g.name }}</td>
+          <td>{{ g.localGroups }}</td>
+          <td>{{ g.pbxName }}</td>
+          <td>{{ g.accessParametersName }}</td>
+          <td *ngIf="is_mt_enable">{{ g.tenant }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="summary">Total Rows: {{ groupData.length }} | Selected: {{ selected }}</div>
+
+  <div class="action-bar">
+    <button class="border_button" (click)="addGroup()">Add</button>
+    <button
+      class="border_button"
+      [disabled]="selected !== 1"
+      [class.disabled]="selected !== 1"
+      (click)="modifyGroup()"
+    >
+      Modify
+    </button>
+    <button
+      class="border_button"
+      [disabled]="selected !== 1"
+      [class.disabled]="selected !== 1"
+      (click)="copyGroup()"
+    >
+      Copy
+    </button>
+    <button
+      class="border_button"
+      [disabled]="selected === 0"
+      [class.disabled]="selected === 0"
+      (click)="deleteGroup()"
+    >
+      Delete
+    </button>
+  </div>
+</div>
