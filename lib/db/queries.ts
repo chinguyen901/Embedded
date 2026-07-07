@@ -1,7 +1,8 @@
 import { desc, eq } from "drizzle-orm";
 import { db } from "./index";
-import { matchAnalyses, matches } from "./schema";
+import { leagueFixturesCache, matchAnalyses, matches } from "./schema";
 import type { Prediction, Source, StructuredAnalysis } from "../ai/schemas";
+import type { Fixture } from "../fixtures/football-data";
 
 export interface MatchInput {
   league: string;
@@ -112,6 +113,31 @@ export async function insertAnalysis(params: {
     .returning();
 
   return mapRow(inserted[0]);
+}
+
+export async function getCachedFixtures(league: string): Promise<{ fixtures: Fixture[]; expiresAt: Date } | null> {
+  if (!db) return null;
+
+  const rows = await db
+    .select()
+    .from(leagueFixturesCache)
+    .where(eq(leagueFixturesCache.league, league))
+    .limit(1);
+
+  if (rows.length === 0) return null;
+  return { fixtures: rows[0].fixtures as Fixture[], expiresAt: rows[0].expiresAt };
+}
+
+export async function upsertFixturesCache(league: string, fixtures: Fixture[], expiresAt: Date): Promise<void> {
+  if (!db) return;
+
+  await db
+    .insert(leagueFixturesCache)
+    .values({ league, fixtures, expiresAt })
+    .onConflictDoUpdate({
+      target: leagueFixturesCache.league,
+      set: { fixtures, expiresAt, fetchedAt: new Date() },
+    });
 }
 
 function mapRow(row: typeof matchAnalyses.$inferSelect): StoredAnalysis {

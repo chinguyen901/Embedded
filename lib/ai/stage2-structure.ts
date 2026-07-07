@@ -1,5 +1,6 @@
-import { generateObject } from "ai";
-import { hasGatewayKey, STAGE2_MODEL } from "./gateway";
+import { generateText, Output } from "ai";
+import { google } from "@ai-sdk/google";
+import { hasAiKey, STAGE2_MODEL } from "./provider";
 import { mockStructuredAnalysis } from "./mock-data";
 import { StructuredAnalysisSchema, type StructuredAnalysis } from "./schemas";
 
@@ -15,9 +16,11 @@ ${rawText}
 }
 
 /**
- * Stage 2: dùng model khác (không phải Perplexity Sonar) để cấu trúc hóa dữ liệu thô
- * thành JSON tiếng Việt theo StructuredAnalysisSchema. Xem CLAUDE.md để biết lý do
- * không dùng generateObject trực tiếp trên Sonar.
+ * Stage 2: dùng Gemini (không kèm tool search) để cấu trúc hóa dữ liệu thô
+ * thành JSON tiếng Việt theo StructuredAnalysisSchema, qua `generateText` với
+ * `output: Output.object(...)` (API `generateObject` đã deprecated trong ai@6).
+ * Tách riêng khỏi stage 1 vì Gemini không hỗ trợ kết hợp search grounding +
+ * structured output trong cùng 1 lời gọi — xem CLAUDE.md.
  */
 export async function structureAnalysis(
   homeTeam: string,
@@ -25,24 +28,24 @@ export async function structureAnalysis(
   rawText: string,
   isMock: boolean,
 ): Promise<StructuredAnalysis> {
-  if (!hasGatewayKey || isMock) {
+  if (!hasAiKey || isMock) {
     return mockStructuredAnalysis(homeTeam, awayTeam);
   }
 
   const runOnce = () =>
-    generateObject({
-      model: STAGE2_MODEL,
-      schema: StructuredAnalysisSchema,
+    generateText({
+      model: google(STAGE2_MODEL),
+      output: Output.object({ schema: StructuredAnalysisSchema }),
       prompt: buildPrompt(homeTeam, awayTeam, rawText),
     });
 
   try {
     try {
-      const { object } = await runOnce();
-      return object;
+      const result = await runOnce();
+      return result.output;
     } catch {
-      const { object } = await runOnce();
-      return object;
+      const result = await runOnce();
+      return result.output;
     }
   } catch (err) {
     throw new Error(

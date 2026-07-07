@@ -1,5 +1,6 @@
 import { generateText } from "ai";
-import { hasGatewayKey, STAGE3_MODEL } from "./gateway";
+import { google } from "@ai-sdk/google";
+import { hasAiKey, STAGE3_MODEL } from "./provider";
 import { mockRationale } from "./mock-data";
 import type { ExtractedSignals, Prediction } from "./schemas";
 
@@ -68,13 +69,13 @@ async function generateRationale(
   keyFactors: string[],
   isMock: boolean,
 ): Promise<string> {
-  if (!hasGatewayKey || isMock) {
+  if (!hasAiKey || isMock) {
     return mockRationale(homeTeam, awayTeam, probs);
   }
 
   try {
     const { text } = await generateText({
-      model: STAGE3_MODEL,
+      model: google(STAGE3_MODEL),
       prompt: `Trận đấu ${homeTeam} (nhà) vs ${awayTeam} (khách). Xác suất đã tính: ${homeTeam} thắng ${(probs.homeWinProb * 100).toFixed(0)}%, hòa ${(probs.drawProb * 100).toFixed(0)}%, ${awayTeam} thắng ${(probs.awayWinProb * 100).toFixed(0)}%.
 Các yếu tố chính: ${keyFactors.join("; ")}.
 Hãy viết 2-4 câu bằng tiếng Việt giải thích ngắn gọn vì sao tỷ lệ trên hợp lý, dựa trên các yếu tố đã cho. Không lặp lại con số phần trăm nguyên văn nhiều lần, chỉ giải thích nguyên nhân.`,

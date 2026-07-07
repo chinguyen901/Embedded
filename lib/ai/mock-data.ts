@@ -1,7 +1,7 @@
 import type { ExtractedSignals, Prediction, Source, StructuredAnalysis } from "./schemas";
 
 /**
- * Dữ liệu giả lập dùng khi chưa cấu hình AI_GATEWAY_API_KEY, để có thể phát triển
+ * Dữ liệu giả lập dùng khi chưa cấu hình GOOGLE_GENERATIVE_AI_API_KEY, để có thể phát triển
  * và kiểm tra giao diện mà không cần gọi AI thật. Xem CLAUDE.md mục "Chế độ demo".
  */
 
@@ -21,7 +21,7 @@ function rand(seed: number, min: number, max: number): number {
 }
 
 export function mockRawSearchText(homeTeam: string, awayTeam: string): string {
-  return `[DỮ LIỆU DEMO - chưa cấu hình AI_GATEWAY_API_KEY]
+  return `[DỮ LIỆU DEMO - chưa cấu hình GOOGLE_GENERATIVE_AI_API_KEY]
 ${homeTeam} gần đây thi đấu ổn định trên sân nhà, trong khi ${awayTeam} có phong độ thất thường ở các trận sân khách gần nhất.
 Không có dữ liệu chấn thương/treo giò xác thực trong chế độ demo.
 Đây là văn bản giả lập để kiểm tra giao diện, không phản ánh thông tin thật.`;
@@ -57,7 +57,7 @@ export function mockStructuredAnalysis(homeTeam: string, awayTeam: string): Stru
     awayFormSummary: `[Demo] ${awayTeam} có phong độ ${awayForm > 0.6 ? "khá tốt" : "không ổn định"} khi thi đấu xa nhà gần đây.`,
     headToHeadSummary: `[Demo] Hai đội có lịch sử đối đầu cân bằng trong các lần gặp nhau gần nhất.`,
     keyFactors: [
-      "Đây là dữ liệu demo, chưa kết nối AI Gateway thật.",
+      "Đây là dữ liệu demo, chưa kết nối AI thật.",
       `${homeTeam} có lợi thế sân nhà.`,
       `${awayTeam} cần cải thiện khả năng ghi bàn xa nhà.`,
     ],
@@ -73,5 +73,5 @@ export function mockStructuredAnalysis(homeTeam: string, awayTeam: string): Stru
 
 export function mockRationale(homeTeam: string, awayTeam: string, prediction: Pick<Prediction, "homeWinProb" | "drawProb" | "awayWinProb">): string {
   const leader = prediction.homeWinProb >= prediction.awayWinProb ? homeTeam : awayTeam;
-  return `[Demo] ${leader} được đánh giá nhỉnh hơn dựa trên phong độ gần đây và dữ liệu giả lập. Đây không phải dự đoán thật vì chưa cấu hình AI_GATEWAY_API_KEY.`;
+  return `[Demo] ${leader} được đánh giá nhỉnh hơn dựa trên phong độ gần đây và dữ liệu giả lập. Đây không phải dự đoán thật vì chưa cấu hình GOOGLE_GENERATIVE_AI_API_KEY.`;
 }

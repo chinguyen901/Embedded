@@ -11,6 +11,14 @@ export const matches = pgTable("matches", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const leagueFixturesCache = pgTable("league_fixtures_cache", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  league: text("league").notNull().unique(),
+  fixtures: jsonb("fixtures").notNull(),
+  fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull().defaultNow(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+});
+
 export const matchAnalyses = pgTable(
   "match_analyses",
   {

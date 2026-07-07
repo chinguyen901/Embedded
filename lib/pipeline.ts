@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { searchMatchInfo } from "./ai/stage1-search";
 import { structureAnalysis } from "./ai/stage2-structure";
 import { predictMatch } from "./ai/stage3-predict";
-import { STAGE1_MODEL, STAGE2_MODEL } from "./ai/gateway";
+import { STAGE1_MODEL, STAGE2_MODEL } from "./ai/provider";
 import type { MatchAnalysisResult } from "./ai/schemas";
 import { buildCacheKey, computeExpiresAt, isFresh, TTL_HOURS } from "./cache/policy";
 import { dbEnabled } from "./db";

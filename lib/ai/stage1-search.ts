@@ -1,5 +1,6 @@
 import { generateText } from "ai";
-import { hasGatewayKey, STAGE1_MODEL } from "./gateway";
+import { google } from "@ai-sdk/google";
+import { hasAiKey, STAGE1_MODEL } from "./provider";
 import { mockRawSearchText, mockSources } from "./mock-data";
 import type { Source } from "./schemas";
 
@@ -24,16 +25,17 @@ Nếu không tìm thấy thông tin xác thực cho một mục, hãy nói rõ "
 }
 
 /**
- * Stage 1: gọi Perplexity Sonar qua Vercel AI Gateway để lấy thông tin cập nhật.
- * Cố tình KHÔNG dùng generateObject ở bước này — xem CLAUDE.md mục
- * "Quyết định kiến trúc quan trọng" để biết lý do (bug đã biết giữa Sonar + generateObject).
+ * Stage 1: gọi Gemini kèm tool Google Search (grounding) để lấy thông tin cập nhật.
+ * Cố tình KHÔNG dùng generateObject ở bước này — Gemini không hỗ trợ kết hợp
+ * search grounding + structured output trong cùng 1 lời gọi. Xem CLAUDE.md mục
+ * "Quyết định kiến trúc quan trọng".
  */
 export async function searchMatchInfo(
   league: string,
   homeTeam: string,
   awayTeam: string,
 ): Promise<Stage1Result> {
-  if (!hasGatewayKey) {
+  if (!hasAiKey) {
     return {
       rawText: mockRawSearchText(homeTeam, awayTeam),
       sources: mockSources(homeTeam, awayTeam),
@@ -43,7 +45,8 @@ export async function searchMatchInfo(
 
   const runOnce = () =>
     generateText({
-      model: STAGE1_MODEL,
+      model: google(STAGE1_MODEL),
+      tools: { google_search: google.tools.googleSearch({}) },
       prompt: buildPrompt(league, homeTeam, awayTeam),
     });
 

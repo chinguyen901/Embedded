@@ -4,7 +4,8 @@ export type LeagueId =
   | "serie-a"
   | "bundesliga"
   | "ligue-1"
-  | "champions-league";
+  | "champions-league"
+  | "world-cup-2026";
 
 export interface League {
   id: LeagueId;
@@ -124,6 +125,36 @@ export const LEAGUES: League[] = [
       "Benfica",
       "Porto",
       "Ajax",
+    ],
+  },
+  {
+    id: "world-cup-2026",
+    name: "FIFA World Cup 2026",
+    teams: [
+      "United States",
+      "Canada",
+      "Mexico",
+      "Argentina",
+      "Brazil",
+      "France",
+      "England",
+      "Spain",
+      "Germany",
+      "Portugal",
+      "Netherlands",
+      "Belgium",
+      "Italy",
+      "Croatia",
+      "Uruguay",
+      "Colombia",
+      "Japan",
+      "South Korea",
+      "Morocco",
+      "Senegal",
+      "Switzerland",
+      "Denmark",
+      "Ecuador",
+      "Australia",
     ],
   },
 ];
